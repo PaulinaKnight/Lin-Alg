@@ -1,1 +1,46 @@
+# Import packages
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+# n_components == min(n_samples, n_features)
+from sklearn.preprocessing import StandardScaler
+%matplotlib inline
 
+# Import data and standardize it
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+df = pd.read_csv(url, names=['sepal length','sepal width','petal length','petal width','target'])
+
+from sklearn.preprocessing import StandardScaler
+features = ['sepal length', 'sepal width', 'petal length', 'petal width']
+x = df.loc[:, features].values
+y = df.loc[:,['target']].values
+#x = StandardScaler().fit_transform(x)
+
+# Standardize data by subtracting mean
+mean_vec = np.mean(x, axis=0)
+mean_vec.shape
+x.shape
+x1 = x - mean_vec
+pd.DataFrame(data = x1, columns = features).head()
+
+# Determine covariance matrix
+A = np.cov(x.T)
+A.shape
+print(A)
+
+# Find eigenvalues and eigenvectors
+e, v = np.linalg.eig(A)
+print(e)
+
+# Shows variance of eigenvalues
+variance = (e)/e.sum()
+print(variance)
+
+# Sort eigenvalues and eigenvectors
+idx = np.argsort(e)[::-1]
+e = e[idx]
+e = np.real_if_close(e)
+v = v[:, idx]
+print(e)
+print(v)
